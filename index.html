@@ -2,84 +2,93 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>ELARAA SWHD V1 - Ultra HD</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ELARAA SWHD V1 - Direct WhatsApp Status Ultra HD</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{background:#000}
-#loading{position:fixed;inset:0;background:radial-gradient(circle at center,#1a0a1a 0%,#000 85%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:.6s}
-#loading.hide{opacity:0;pointer-events:none}
-.avatar{width:200px;height:200px;background:#fff;border-radius:50%;border:4px solid #ff7ac8;box-shadow:0 0 45px rgba(255,122,200,.8);overflow:hidden}
-.avatar img{width:100%;height:100%;object-fit:cover}
-.progress{width:200px;height:6px;background:rgba(255,255,255,.2);border-radius:10px;margin-top:16px;overflow:hidden}
-.bar{height:100%;width:0%;background:linear-gradient(90deg,#ff7ac8,#ff1493);transition:.15s}
-#app{display:none;background:#fff5f8;min-height:100vh} #app.show{display:block}
-.header{position:sticky;top:0;background:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.stats{display:flex;gap:8px;padding:12px} .s{flex:1;background:#fff;border-radius:16px;padding:10px;text-align:center;border:1px solid #ffe0ec}
-.card{margin:0 12px 12px;background:#fff;border-radius:20px;padding:16px;box-shadow:0 4px 16px rgba(255,122,200,.15);border:1px solid #ffe0ec}
-.menu-btn{width:36px;height:36px;background:#fff0f5;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
-.menu{position:fixed;top:0;left:-300px;width:280px;height:100%;background:#fff;z-index:300;transition:.3s;padding:16px;border-radius:0 20px 20px 0} .menu.open{left:0}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none}
-.mi{width:100%;display:flex;gap:12px;padding:12px 14px;border-radius:12px;margin-bottom:6px;font-weight:600;color:#444;background:none;border:none;text-align:left} .mi.active{background:#ff7ac8;color:#fff}
-#vip{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:center;justify-content:center;padding:14px} #vip.open{display:flex}
-.vipb{background:#fff;border-radius:24px;width:100%;max-width:360px;max-height:90vh;overflow:auto;padding:18px}
-.paket{display:flex;justify-content:space-between;padding:12px 14px;border:2px solid #ffe0ec;border-radius:14px;margin-bottom:8px} .paket.active{border-color:#ff7ac8;background:#fff0f5}
-.qrbox{background:#fff;padding:12px;border-radius:16px;border:2px solid #ffe0ec;text-align:center;margin-top:12px}
-.btnP{width:100%;background:linear-gradient(135deg,#ff7ac8,#ff4da6);color:#fff;border:none;padding:14px;border-radius:14px;font-weight:800;margin-top:16px}
-.btnD{width:100%;background:#111;color:#fff;border:none;padding:12px;border-radius:14px;font-weight:700;margin-top:10px;font-size:13px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Outfit',sans-serif}
+:root{--pink:#ff7ac8;--pink2:#ff4da6;--bg:#fff2f7}
+body{background:var(--bg);color:#222}
+#loader{position:fixed;inset:0;z-index:9999;background:#0a0a0f;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s}
+#loader.hide{opacity:0;pointer-events:none}
+.l-ring{width:160px;height:160px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#ff7ac8,#ff4da6);box-shadow:0 0 60px rgba(255,122,200,.6)}
+.l-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#fff}
+.load-bar{width:180px;height:4px;background:rgba(255,255,255,.15);border-radius:10px;margin-top:22px;overflow:hidden}
+.load-fill{height:100%;width:0%;background:linear-gradient(90deg,#ff7ac8,#ff4da6);transition:width .2s}
+.header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ffe0ec}
+.wrap{padding:12px 14px;display:flex;flex-direction:column;gap:12px}
+.stats{display:flex;gap:8px}.stat{flex:1;background:#fff;border-radius:14px;padding:10px 8px;text-align:center;border:1px solid #ffe0ec}
+.hero{background:#fff;border-radius:22px;padding:18px;border:1px solid #ffe0ec;box-shadow:0 8px 30px rgba(255,122,200,.12)}
+.upload-box{margin-top:16px;border:2px dashed #ffb3d9;border-radius:18px;padding:22px 12px;text-align:center;background:linear-gradient(135deg,#fffafa,#fff0f5);cursor:pointer}
+.section{background:#fff;border-radius:20px;padding:16px;border:1px solid #ffe0ec}
+.green-btn{background:#22c55e;color:#fff;border:none;width:100%;padding:12px;border-radius:12px;font-weight:700;font-size:12px;margin-top:8px;cursor:pointer}
+.paket-vip{background:#fff;border:1px solid #ffe0ec;border-radius:16px;padding:14px;margin-bottom:10px}
+.btn-pink{background:linear-gradient(135deg,#ff7ac8,#ff4da6);color:#fff;border:none;width:100%;padding:12px;border-radius:12px;font-weight:700;margin-top:8px;cursor:pointer}
+.qr-preview{width:100%;border-radius:12px;margin-top:8px}
 </style>
 </head>
 <body>
-<div id="loading">
-<div class="avatar"><img src="IMG-20261026-WA1381.jpg"></div>
-<div style="color:#fff;font-size:22px;font-weight:800;margin-top:18px;text-align:center">ELARAA <span style="color:#ff7ac8">SWHD V1</span><br>Direct WhatsApp<br>Status Ultra HD</div>
-<div class="progress"><div class="bar" id="bar"></div></div>
-</div>
-<div id="app">
-<div class="header"><div style="display:flex;gap:10px;align-items:center"><div style="width:36px;height:36px;background:#ffe0ec;border-radius:10px;display:flex;align-items:center;justify-content:center">🎀</div><div><b>ELARAA SWHD</b><br><span style="font-size:10px;color:#ff7ac8">V1 - Ultra HD ♥</span></div></div><div class="menu-btn" onclick="toggleMenu()">☰</div></div>
-<div class="stats"><div class="s"><span>Resolusi</span><b>1080p</b></div><div class="s"><span>Frame rate</span><b>60 FPS</b></div><div class="s"><span>Mulai</span><b>10K</b></div></div>
-<div class="card">
-<div style="font-size:12px;color:#ff7ac8;font-weight:600">🌸 ELARAA SWHD V1</div>
-<div style="font-size:21px;font-weight:800;line-height:1.2">Direct WhatsApp<br><span style="color:#ff7ac8">Status Ultra HD</span></div>
-<div style="border:2px dashed #ffb3d9;border-radius:16px;padding:22px;text-align:center;background:#fffafc;margin-top:10px" onclick="document.getElementById('f').click()"><div>⬆️</div><div style="font-weight:700">Klik untuk pilih video dari Galeri HP</div></div>
-<input type="file" id="f" accept="video/*" style="display:none">
-<button class="btnP" onclick="openVip()">💖 BELI LIMIT - BAYAR PAKAI QR PINK</button>
-<button class="btnD" onclick="kirim()">🚀 KIRIM KE STATUS WHATSAPP HD</button>
+<div id="loader">
+<div class="l-ring"><img src="IMG-20261026-WA1381.jpg"></div>
+<div style="color:#fff;text-align:center;margin-top:16px">
+<div style="font-weight:800">ELARAA SWHD</div>
+<div style="font-size:11px;opacity:.7;margin-top:4px">Direct WhatsApp Status Ultra HD</div>
+<div class="load-bar" style="margin:14px auto 0"><div class="load-fill" id="loadFill"></div></div>
+<div style="font-size:10px;opacity:.6;margin-top:8px" id="loadTxt">MEMUAT SISTEM ELARAA ULTRA HD ...</div>
 </div>
 </div>
-<div class="overlay" id="ov" onclick="toggleMenu()"></div>
-<div class="menu" id="mn">
-<div style="display:flex;justify-content:space-between;margin-bottom:16px"><b>ELARAA SWHD</b><span onclick="toggleMenu()">✕</span></div>
-<button class="mi active">🏠 Beranda</button>
-<button class="mi" onclick="toggleMenu();openVip()">👑 Paket VIP - QR Pink</button>
-<button class="mi" onclick="window.open('https://wa.me/6282118148621')">🤖 Sewa Bot WhatsApp</button>
+<div class="header">
+<div style="display:flex;gap:8px;align-items:center"><div style="width:38px;height:38px;background:#ffe0ec;border-radius:10px;display:grid;place-items:center">🎀</div><div><h1 style="font-size:14px;font-weight:800">ELARAA SWHD</h1><p style="font-size:10px;color:#ff7ac8;font-weight:600">V1 - Ultra HD ❤️</p></div></div>
+<button style="width:36px;height:36px;border:none;background:#fff;border-radius:10px" onclick="toggleM()">☰</button>
 </div>
-<div id="vip" onclick="if(event.target==this)closeVip()">
-<div class="vipb">
-<div style="display:flex;justify-content:space-between"><b>👑 Paket VIP - Bayar QR</b><span onclick="closeVip()">✕</span></div>
-<div class="paket active" onclick="sel(this,3000)"><div><b>150 Limit</b></div><b style="color:#ff7ac8">Rp 3.000</b></div>
-<div class="paket" onclick="sel(this,5000)"><div><b>500 Limit ⭐</b></div><b style="color:#ff7ac8">Rp 5.000</b></div>
-<div class="paket" onclick="sel(this,9000)"><div><b>1000 Limit</b></div><b style="color:#ff7ac8">Rp 9.000</b></div>
-<div class="paket" onclick="sel(this,20000)"><div><b>2500 Limit</b></div><b style="color:#ff7ac8">Rp 20.000</b></div>
-<div style="background:#fff0f5;border-radius:14px;padding:12px;margin-top:12px;text-align:center"><div style="font-weight:700">TOTAL: <span id="tb" style="color:#ff1493">Rp 3.000</span></div></div>
-<div class="qrbox">
-<div style="font-weight:700;color:#ff7ac8">💖 SCAN QR PINK INI 💖</div>
-<img src="IMG-20261026-WA1381.jpg" style="width:100%;border-radius:12px;margin-top:8px">
-<button onclick="copyJ()" style="width:100%;background:linear-gradient(135deg,#ff7ac8,#ff4da6);color:#fff;border:none;padding:10px;border-radius:12px;font-weight:700;margin-top:10px">📋 SALIN JUMLAH</button>
-<button onclick="bayar()" style="width:100%;background:#111;color:#fff;border:none;padding:10px;border-radius:12px;font-weight:700;margin-top:8px">✅ Sudah Bayar - Chat Owner</button>
+<div class="wrap" id="app" style="display:none">
+<div class="stats">
+<div class="stat"><b>1080p</b><small>Resolusi</small></div>
+<div class="stat"><b>60 FPS</b><small>Frame rate</small></div>
+<div class="stat"><b>Mulai 10K</b></div>
+</div>
+<div class="hero">
+<div style="font-family:'Fredoka';font-size:26px;font-weight:700;line-height:1.05">Direct WhatsApp<br><span style="color:#ff4da6">Status Ultra HD</span></div>
+<div style="font-size:12px;color:#777;margin-top:6px">Upload video dari galeri HP dan kirim langsung ke Status WhatsApp tanpa pecah, tanpa blur. Diproses oleh Engine Elaraa untuk hasil setiap aslinya.</div>
+<div class="upload-box" onclick="document.getElementById('fileIn').click()">
+<div style="width:40px;height:40px;background:#fff;border-radius:12px;display:grid;place-items:center;margin:0 auto 8px">⬆️</div>
+<b style="font-size:12px">Klik untuk pilih video dari Galeri HP</b><br>
+<small style="font-size:10px;color:#999">MP4, MOV, MKV, WebM (Max 100 MB)</small>
+<input type="file" id="fileIn" accept="video/*" hidden>
+</div>
+<button class="btn-pink" onclick="openVip()">💖 BELI LIMIT - BAYAR PAKAI QR PINK</button>
+</div>
+
+<div class="section" style="background:#fff0f5;border:2px solid #ff7ac8">
+<b>Grup Sewa Bot - Pribadi</b><br>
+<small>Grup pribadi khusus kamu, instan tanpa antri</small><br><br>
+<b style="color:#ff4da6">💖 QR PINK KAMU 💖</b>
+<img src="IMG-20261026-WA1381.jpg" class="qr-preview">
+<button class="btn-pink" onclick="window.open('https://wa.me/6282118148621')">Konfirmasi Sudah Bayar</button>
+</div>
+
+<div class="section">
+<b>Paket SWHD Mulai 10K</b><br>
+<div class="paket-vip"><b>Starter</b><br><span style="font-size:22px;font-weight:800">10K</span> / 5 video HD / hari<br><button class="btn-pink" onclick="openVip()">Beli Starter</button></div>
+<div class="paket-vip"><b>VIP</b><br><span style="font-size:22px;font-weight:800">25K</span> / 15 video HD / hari<br><button class="btn-pink" onclick="openVip()">Beli VIP</button></div>
+<div class="paket-vip"><b>Sultan</b><br><span style="font-size:22px;font-weight:800">50K</span> / 40 video HD / hari<br><button class="btn-pink" onclick="openVip()">Beli Sultan</button></div>
 </div>
 </div>
+
+<div id="vipModal" style="position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);z-index:80;display:none;align-items:end;justify-content:center;padding:14px">
+<div style="background:#fff;border-radius:20px;width:100%;max-width:400px;padding:16px">
+<div style="display:flex;justify-content:space-between"><b>👑 Beli Paket VIP</b><button onclick="closeVip()" style="border:none;background:#f5f5f5;width:28px;height:28px;border-radius:8px">✕</button></div>
+<div style="margin-top:12px;text-align:center"><div style="font-weight:800;color:#ff4da6">💖 SCAN QR PINK INI 💖</div><img src="IMG-20261026-WA1381.jpg" style="width:100%;border-radius:12px;margin-top:8px"><button class="btn-pink" onclick="window.open('https://wa.me/6282118148621')">Sudah Bayar? Konfirmasi</button></div>
 </div>
+</div>
+
 <script>
-let p=0;const bar=document.getElementById('bar');const ld=document.getElementById('loading');const app=document.getElementById('app');
-setInterval(()=>{p+=7;if(p>100)p=100;bar.style.width=p+'%';if(p==100){setTimeout(()=>{ld.classList.add('hide');app.classList.add('show')},400)}},90);
-function toggleMenu(){document.getElementById('mn').classList.toggle('open');const o=document.getElementById('ov');o.style.display=o.style.display=='block'?'none':'block'}
-function openVip(){document.getElementById('vip').classList.add('open')} function closeVip(){document.getElementById('vip').classList.remove('open')}
-let cur=3000;function sel(el,j){document.querySelectorAll('.paket').forEach(x=>x.classList.remove('active'));el.classList.add('active');cur=j;document.getElementById('tb').innerText='Rp '+j.toLocaleString('id-ID')}
-function copyJ(){navigator.clipboard.writeText(cur.toString());alert('Rp '+cur+' disalin!')}
-function bayar(){window.open('https://wa.me/6282118148621?text=Halo Owner, sudah bayar Rp '+cur,'_blank')}
-function kirim(){alert('Pilih video dulu ya!')}
+let p=0;const fill=document.getElementById('loadFill');
+let inter=setInterval(()=>{p+=2;if(p>100)p=100;fill.style.width=p+'%';document.getElementById('loadTxt').innerText='MEMUAT SISTEM ELARAA ULTRA HD ... '+p+'%';if(p>=100){clearInterval(inter);setTimeout(()=>{document.getElementById('loader').classList.add('hide');document.getElementById('app').style.display='flex'},600)}},30);
+function openVip(){document.getElementById('vipModal').style.display='flex'}
+function closeVip(){document.getElementById('vipModal').style.display='none'}
+function toggleM(){}
+document.getElementById('fileIn').addEventListener('change',e=>{if(e.target.files[0])alert('Video siap!')})
 </script>
 </body>
- </html>
+</html>
