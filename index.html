@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ELARAA HD SW&TT - Bot 083173855429</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0f0025;color:white;font-family:Poppins,sans-serif}
+.header{background:linear-gradient(90deg,#ff6fb5,#a78bfa);padding:15px;text-align:center;font-weight:900;font-size:22px;position:sticky;top:0}
+.card{max-width:420px;margin:12px auto;background:#1c0f33;border:1px solid #ff6fb544;border-radius:24px;padding:16px}
+.pilih{border:2px dashed #ff6fb5; border-radius:20px;padding:25px;text-align:center;cursor:pointer;background:#2a1750}
+.btn{width:100%;padding:14px;border-radius:50px;border:none;font-weight:900;cursor:pointer;margin-top:10px}
+.btn-pink{background:linear-gradient(90deg,#ff8abf,#ff3e9a);color:white}
+.btn-dark{background:#2a1750;color:white;border:1px solid #a78bfa}
+input,select{width:100%;padding:12px;border-radius:14px;background:#0f0025;border:1px solid #ff6fb5;color:white;margin-top:10px;box-sizing:border-box}
+.gItem{display:flex;justify-content:space-between;align-items:center;background:#2a1750;padding:12px;border-radius:14px;margin-top:8px}
+.poster{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.poster div{background:linear-gradient(135deg,#ff8abf,#a78bfa);border-radius:18px;padding:12px;text-align:center;font-weight:700;cursor:pointer;color:white}
+.qr{background:white;color:black;border-radius:20px;padding:15px;text-align:center;margin-top:15px;display:none}
+small{opacity:0.8}
+</style>
+</head>
+<body>
+<div class="header">✨ ELARAA HD SW&TT ✨<br><small style="font-size:11px">SWHD No Pecah + TT HD | Bot: 083173855429</small></div>
+
+<div class="card" id="s1">
+<h3>STATUS WHATSAPP HD</h3>
+<div class="pilih" onclick="document.getElementById('file').click()">
+📁 Klik untuk pilih video<br><small>MP4 / MOV / MKV</small>
+<input type="file" id="file" accept="video/*" hidden onchange="prev(this)">
+</div>
+<div style="margin-top:15px;background:#2a1750;padding:10px;border-radius:12px">
+Limit: <b id="lim">0</b> | <span id="exp"></span><br>
+<button class="btn btn-pink" id="klaimBtn" onclick="klaim()">KLAIM 4 LIMIT HARIAN</button>
+</div>
+<button class="btn btn-dark" onclick="document.getElementById('beliSec').scrollIntoView({behavior:'smooth'})">BELI LIMIT 💖</button>
+</div>
+
+<div class="card" id="s2" style="display:none">
+<video id="v" controls style="width:100%;border-radius:15px"></video>
+<button class="btn btn-pink" onclick="showS3()">LANJUT KE PILIH GRUP ➜</button>
+</div>
+
+<div class="card" id="s3" style="display:none">
+<h4>PILIH GRUP TUJUAN (5 GRUP)</h4>
+<div id="gList"></div>
+<h4 style="margin-top:15px">NOMOR WA PENGIRIM (buat di-tag)</h4>
+<input id="wa" placeholder="0821xxxx / 628xxxx">
+<button class="btn btn-pink" onclick="kirim()">🚀 KIRIM SEKARANG (6 LIMIT)</button>
+<small style="display:block;text-align:center;margin-top:8px">Video otomatis ke Bot 083173855429 di-HD-kan lalu Bot kirim ke grup + tag kamu</small>
+
+<div id="beliSec" style="margin-top:25px">
+<h3 style="text-align:center">POSTER CUTE BELI LIMIT - EXP 30 HARI</h3>
+<div class="poster">
+<div onclick="beli(150,3000)">150 Limit<br>Rp 3.000<br><small>30 hari</small></div>
+<div onclick="beli(600,5000)" style="border:2px solid yellow">600 Limit<br>Rp 5.000<br><small>BEST SELLER</small></div>
+<div onclick="beli(1000,9000)">1000 Limit<br>Rp 9.000<br><small>30 hari</small></div>
+<div onclick="beli(2500,20000)">2500 Limit<br>Rp 20.000<br><small>SULTAN</small></div>
+</div>
+<div id="qrBox" class="qr">
+<h4 id="qrJ"></h4>
+<img id="qrImg" src="https://i.ibb.co/default/qris.png" style="width:200px;border-radius:12px" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ELARAA-083173855429'">
+<br><b id="qrH"></b><br>
+<small>Scan QRIS Elaraa & bayar sesuai nominal<br>Upload bukti ke Owner</small><br>
+<button class="btn btn-pink" onclick="konfirm()">Sudah Bayar - Chat Owner 08211814862</button>
+</div>
+</div>
+</div>
+
+<script>
+const groups=[
+{id:'grup1',name:'GRUP 1',link:'https://chat.whatsapp.com/F0Cw2NpUHeeBNVWnhpYGGb'},
+{id:'grup2',name:'GRUP 2',link:'https://chat.whatsapp.com/BoPwFUcBdGpEHRCxpC4WcG'},
+{id:'grup3',name:'GRUP 3',link:'https://chat.whatsapp.com/JnZru9MDQsY842ReNV0QQ4'},
+{id:'grup4',name:'GRUP 4',link:'https://chat.whatsapp.com/G37lusc8m7dBWNTyWJctsj'},
+{id:'grup5',name:'GRUP 5',link:'https://chat.whatsapp.com/KdGDHoHDlxk84IeeanYev3'}
+]
+let sel=null
+let limit=parseInt(localStorage.getItem('elaraa_limit')||'0')
+let exp=localStorage.getItem('elaraa_exp')
+let last=localStorage.getItem('elaraa_last')
+function render(){
+ document.getElementById('lim').innerText=limit
+ let gH=''; groups.forEach(g=>{gH+=`<div class="gItem"><div><b>${g.name}</b><br><small>${g.id} - Siap Kirim</small></div><div><button onclick="pilih('${g.id}')" style="padding:6px 12px;border-radius:20px;background:#ff6fb5;color:white;border:none">Pilih</button> <a href="${g.link}" target="_blank" style="font-size:11px;color:#a78bfa">Join</a></div></div>`})
+ document.getElementById('gList').innerHTML=gH
+ if(exp){document.getElementById('exp').innerText='Exp: '+new Date(exp).toLocaleDateString(); if(new Date()>new Date(exp)){limit=0;localStorage.setItem('elaraa_limit','0');document.getElementById('lim').innerText=0}}
+ if(last && new Date(last).toDateString()==new Date().toDateString()){let b=document.getElementById('klaimBtn'); b.innerText='SUDAH KLAIM HARI INI 💤'; b.disabled=true}
+}
+render()
+function prev(i){ if(i.files[0]){document.getElementById('v').src=URL.createObjectURL(i.files[0]); document.getElementById('s1').style.display='none'; document.getElementById('s2').style.display='block'}}
+function showS3(){document.getElementById('s2').style.display='none'; document.getElementById('s3').style.display='block'; render()}
+function pilih(id){sel=id; alert('Pilih: '+id+' ✅'); render(); document.querySelectorAll('.gItem').forEach(e=>{if(e.innerHTML.includes(id)) e.style.border='2px solid #ff6fb5'})}
+function klaim(){ if(last && new Date(last).toDateString()==new Date().toDateString()) return alert('Besok lagi!'); limit+=4; localStorage.setItem('elaraa_limit',limit); localStorage.setItem('elaraa_last',new Date().toISOString()); render(); alert('Berhasil +4 Limit!')}
+function beli(j,h){document.getElementById('qrBox').style.display='block'; document.getElementById('qrJ').innerText=j+' Limit'; document.getElementById('qrH').innerText='Rp '+h.toLocaleString(); document.getElementById('qrBox').dataset.j=j; document.getElementById('qrBox').dataset.h=h; document.getElementById('qrBox').scrollIntoView({behavior:'smooth'})}
+function konfirm(){let j=document.getElementById('qrBox').dataset.j; let h=document.getElementById('qrBox').dataset.h; let wa=document.getElementById('wa').value||'-'; let ed=new Date(); ed.setDate(ed.getDate()+30); localStorage.setItem('elaraa_exp',ed.toISOString()); let msg=`Halo Owner Elaraa 08211814862, aku beli ${j} limit Rp ${h} - WA: ${wa} - Sudah bayar QRIS, tolong aktifkan limit ku ya`; window.open('https://wa.me/628211814862?text='+encodeURIComponent(msg),'_blank'); limit+=parseInt(j); localStorage.setItem('elaraa_limit',limit); render(); alert('Untuk demo, limit langsung +'+j+' (exp 30 hari). Nanti ganti jadi manual konfirmasi Owner ya!')}
+async function kirim(){
+ let wa=document.getElementById('wa').value; let f=document.getElementById('file').files[0]
+ if(!f) return alert('Pilih video'); if(!sel) return alert('Pilih grup'); if(!wa) return alert('Isi WA'); if(limit<6) return alert('Limit habis! Klaim/Beli')
+ limit-=6; localStorage.setItem('elaraa_limit',limit); render()
+ let fd=new FormData(); fd.append('video',f); fd.append('waNumber',wa); fd.append('group',sel)
+ alert('Kirim ke Bot 083173855429... HD kan & kirim ke '+sel+' + tag @'+wa)
+ try{ await fetch('https://elaraa-bot.onrender.com/upload',{method:'POST',body:fd}); alert('Sukses! Cek grup '+sel) }
+ catch(e){ window.open('https://wa.me/6283173855429?text='+encodeURIComponent(`SWHD UPLOAD\nGrup:${sel}\nWA:${wa}\nFile:${f.name}`),'_blank') }
+}
+</script>
+</body>
+</html>
