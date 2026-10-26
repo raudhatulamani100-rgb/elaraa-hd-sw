@@ -1,94 +1,117 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ELARAA SWHD V1 - Direct WhatsApp Status Ultra HD</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Outfit',sans-serif}
-:root{--pink:#ff7ac8;--pink2:#ff4da6;--bg:#fff2f7}
-body{background:var(--bg);color:#222}
-#loader{position:fixed;inset:0;z-index:9999;background:#0a0a0f;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s}
-#loader.hide{opacity:0;pointer-events:none}
-.l-ring{width:160px;height:160px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#ff7ac8,#ff4da6);box-shadow:0 0 60px rgba(255,122,200,.6)}
-.l-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#fff}
-.load-bar{width:180px;height:4px;background:rgba(255,255,255,.15);border-radius:10px;margin-top:22px;overflow:hidden}
-.load-fill{height:100%;width:0%;background:linear-gradient(90deg,#ff7ac8,#ff4da6);transition:width .2s}
-.header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ffe0ec}
-.wrap{padding:12px 14px;display:flex;flex-direction:column;gap:12px}
-.stats{display:flex;gap:8px}.stat{flex:1;background:#fff;border-radius:14px;padding:10px 8px;text-align:center;border:1px solid #ffe0ec}
-.hero{background:#fff;border-radius:22px;padding:18px;border:1px solid #ffe0ec;box-shadow:0 8px 30px rgba(255,122,200,.12)}
-.upload-box{margin-top:16px;border:2px dashed #ffb3d9;border-radius:18px;padding:22px 12px;text-align:center;background:linear-gradient(135deg,#fffafa,#fff0f5);cursor:pointer}
-.section{background:#fff;border-radius:20px;padding:16px;border:1px solid #ffe0ec}
-.green-btn{background:#22c55e;color:#fff;border:none;width:100%;padding:12px;border-radius:12px;font-weight:700;font-size:12px;margin-top:8px;cursor:pointer}
-.paket-vip{background:#fff;border:1px solid #ffe0ec;border-radius:16px;padding:14px;margin-bottom:10px}
-.btn-pink{background:linear-gradient(135deg,#ff7ac8,#ff4da6);color:#fff;border:none;width:100%;padding:12px;border-radius:12px;font-weight:700;margin-top:8px;cursor:pointer}
-.qr-preview{width:100%;border-radius:12px;margin-top:8px}
-</style>
-</head>
-<body>
-<div id="loader">
-<div class="l-ring"><img src="IMG-20261026-WA1381.jpg"></div>
-<div style="color:#fff;text-align:center;margin-top:16px">
-<div style="font-weight:800">ELARAA SWHD</div>
-<div style="font-size:11px;opacity:.7;margin-top:4px">Direct WhatsApp Status Ultra HD</div>
-<div class="load-bar" style="margin:14px auto 0"><div class="load-fill" id="loadFill"></div></div>
-<div style="font-size:10px;opacity:.6;margin-top:8px" id="loadTxt">MEMUAT SISTEM ELARAA ULTRA HD ...</div>
-</div>
-</div>
-<div class="header">
-<div style="display:flex;gap:8px;align-items:center"><div style="width:38px;height:38px;background:#ffe0ec;border-radius:10px;display:grid;place-items:center">🎀</div><div><h1 style="font-size:14px;font-weight:800">ELARAA SWHD</h1><p style="font-size:10px;color:#ff7ac8;font-weight:600">V1 - Ultra HD ❤️</p></div></div>
-<button style="width:36px;height:36px;border:none;background:#fff;border-radius:10px" onclick="toggleM()">☰</button>
-</div>
-<div class="wrap" id="app" style="display:none">
-<div class="stats">
-<div class="stat"><b>1080p</b><small>Resolusi</small></div>
-<div class="stat"><b>60 FPS</b><small>Frame rate</small></div>
-<div class="stat"><b>Mulai 10K</b></div>
-</div>
-<div class="hero">
-<div style="font-family:'Fredoka';font-size:26px;font-weight:700;line-height:1.05">Direct WhatsApp<br><span style="color:#ff4da6">Status Ultra HD</span></div>
-<div style="font-size:12px;color:#777;margin-top:6px">Upload video dari galeri HP dan kirim langsung ke Status WhatsApp tanpa pecah, tanpa blur. Diproses oleh Engine Elaraa untuk hasil setiap aslinya.</div>
-<div class="upload-box" onclick="document.getElementById('fileIn').click()">
-<div style="width:40px;height:40px;background:#fff;border-radius:12px;display:grid;place-items:center;margin:0 auto 8px">⬆️</div>
-<b style="font-size:12px">Klik untuk pilih video dari Galeri HP</b><br>
-<small style="font-size:10px;color:#999">MP4, MOV, MKV, WebM (Max 100 MB)</small>
-<input type="file" id="fileIn" accept="video/*" hidden>
-</div>
-<button class="btn-pink" onclick="openVip()">💖 BELI LIMIT - BAYAR PAKAI QR PINK</button>
-</div>
+"use client";
+import { useState, useEffect, useRef } from "react";
 
-<div class="section" style="background:#fff0f5;border:2px solid #ff7ac8">
-<b>Grup Sewa Bot - Pribadi</b><br>
-<small>Grup pribadi khusus kamu, instan tanpa antri</small><br><br>
-<b style="color:#ff4da6">💖 QR PINK KAMU 💖</b>
-<img src="IMG-20261026-WA1381.jpg" class="qr-preview">
-<button class="btn-pink" onclick="window.open('https://wa.me/6282118148621')">Konfirmasi Sudah Bayar</button>
-</div>
+export default function KirimPage() {
+  const [limit, setLimit] = useState(0);
+  const [claimedToday, setClaimedToday] = useState(false);
+  const [showHearts, setShowHearts] = useState(false);
+  const [file, setFile] = useState<File|null>(null);
+  const [fileURL, setFileURL] = useState("");
+  const [status, setStatus] = useState<"idle"|"processing"|"done">("idle");
+  const [selectedGroup, setSelectedGroup] = useState<{name:string, link:string}|null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
-<div class="section">
-<b>Paket SWHD Mulai 10K</b><br>
-<div class="paket-vip"><b>Starter</b><br><span style="font-size:22px;font-weight:800">10K</span> / 5 video HD / hari<br><button class="btn-pink" onclick="openVip()">Beli Starter</button></div>
-<div class="paket-vip"><b>VIP</b><br><span style="font-size:22px;font-weight:800">25K</span> / 15 video HD / hari<br><button class="btn-pink" onclick="openVip()">Beli VIP</button></div>
-<div class="paket-vip"><b>Sultan</b><br><span style="font-size:22px;font-weight:800">50K</span> / 40 video HD / hari<br><button class="btn-pink" onclick="openVip()">Beli Sultan</button></div>
-</div>
-</div>
+  const groups = [
+    { name: "Grup 1 ELARAA", link: "https://chat.whatsapp.com/F0Cw2NpUHeeBNVWnhpYGGb" },
+    { name: "Grup 2 ELARAA", link: "https://chat.whatsapp.com/BoPwFUcBdGpEHRCxpC4WcG" },
+    { name: "Grup 3 ELARAA", link: "https://chat.whatsapp.com/JnZru9MDQsY842ReNV0QQ4" },
+  ];
 
-<div id="vipModal" style="position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);z-index:80;display:none;align-items:end;justify-content:center;padding:14px">
-<div style="background:#fff;border-radius:20px;width:100%;max-width:400px;padding:16px">
-<div style="display:flex;justify-content:space-between"><b>👑 Beli Paket VIP</b><button onclick="closeVip()" style="border:none;background:#f5f5f5;width:28px;height:28px;border-radius:8px">✕</button></div>
-<div style="margin-top:12px;text-align:center"><div style="font-weight:800;color:#ff4da6">💖 SCAN QR PINK INI 💖</div><img src="IMG-20261026-WA1381.jpg" style="width:100%;border-radius:12px;margin-top:8px"><button class="btn-pink" onclick="window.open('https://wa.me/6282118148621')">Sudah Bayar? Konfirmasi</button></div>
-</div>
-</div>
+  const paket = [
+    { harga: "5K", limit: 200, video: 33 },
+    { harga: "10K", limit: 500, video: 83 },
+    { harga: "20K", limit: 1500, video: 250 },
+  ];
 
-<script>
-let p=0;const fill=document.getElementById('loadFill');
-let inter=setInterval(()=>{p+=2;if(p>100)p=100;fill.style.width=p+'%';document.getElementById('loadTxt').innerText='MEMUAT SISTEM ELARAA ULTRA HD ... '+p+'%';if(p>=100){clearInterval(inter);setTimeout(()=>{document.getElementById('loader').classList.add('hide');document.getElementById('app').style.display='flex'},600)}},30);
-function openVip(){document.getElementById('vipModal').style.display='flex'}
-function closeVip(){document.getElementById('vipModal').style.display='none'}
-function toggleM(){}
-document.getElementById('fileIn').addEventListener('change',e=>{if(e.target.files[0])alert('Video siap!')})
-</script>
-</body>
-</html>
+  useEffect(()=>{
+    const saved = localStorage.getItem("elaraa_limit");
+    if(saved) setLimit(parseInt(saved));
+    const lastClaim = localStorage.getItem("elaraa_last_claim");
+    if(lastClaim){
+      if(lastClaim===new Date().toDateString()) setClaimedToday(true);
+    }
+  },[]);
+
+  useEffect(()=>{ localStorage.setItem("elaraa_limit", limit.toString()); },[limit]);
+
+  const handleClaim = () =>{
+    if(claimedToday) return;
+    setLimit(l=>l+4);
+    setClaimedToday(true);
+    localStorage.setItem("elaraa_last_claim", new Date().toDateString());
+    setShowHearts(true);
+    setTimeout(()=>setShowHearts(false), 1800);
+  };
+
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>)=>{
+    if(e.target.files?.[0]){
+      const f = e.target.files[0];
+      setFile(f);
+      setFileURL(URL.createObjectURL(f));
+      setStatus("idle");
+      setSelectedGroup(null);
+    }
+  };
+
+  const handleKirim = ()=>{
+    if(limit < 6 || !file) return;
+    setStatus("processing");
+    setSelectedGroup(groups[Math.floor(Math.random()*groups.length)]);
+    setLimit(l=>l-6);
+    setTimeout(()=>setStatus("done"),2000);
+  };
+
+  const openWA = (text:string)=>{
+    window.open(`https://wa.me/6282118148621?text=${encodeURIComponent(text)}`,"_blank");
+  };
+
+  return (
+    <div style={{minHeight:"100vh", background:"#fff7fb", padding:"16px", fontFamily:"Outfit, sans-serif"}}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&display=swap');
+      @keyframes floatHeart {0%{transform:translateY(20px) scale(0);opacity:0} 20%{opacity:1} 100%{transform:translateY(-120px) scale(1.4);opacity:0}}`}</style>
+
+      <div style={{position:"relative", background:"linear-gradient(135deg,#ffc1e3 0%,#ff8ac7 55%,#ff6fb5 100%)", borderRadius:"26px", padding:"18px 20px", color:"#fff", overflow:"hidden", boxShadow:"0 12px 30px rgba(255,122,181,.35)"}}>
+        <div style={{display:"flex", alignItems:"center", gap:"8px"}}>
+          <div style={{width:"36px", height:"36px", background:"rgba(255,255,255,.9)", borderRadius:"50%", display:"grid", placeItems:"center"}}>🎁</div>
+          <div style={{width:"32px", height:"32px", background:"rgba(255,255,255,.85)", borderRadius:"50%", display:"grid", placeItems:"center"}}>💖</div>
+          <span style={{fontWeight:700, fontSize:"13px"}}>LIMIT SAYA</span>
+        </div>
+        <div style={{display:"flex", alignItems:"baseline", gap:"8px", marginTop:"10px"}}>
+          <div style={{fontSize:"44px", fontWeight:800, lineHeight:1}}>{limit}</div>
+          <div style={{fontSize:"13px", fontWeight:700}}>LIMIT</div>
+        </div>
+        <div style={{fontSize:"12px", opacity:.9, marginTop:"4px"}}>1 Video = 6 Limit | Klaim harian 4 limit</div>
+        <div style={{display:"flex", gap:"10px", marginTop:"16px"}}>
+          <button onClick={handleClaim} disabled={claimedToday} style={{flex:1, background: claimedToday ? "rgba(255,255,255,.6)" : "#fff", color: claimedToday ? "#a88" : "#ff4d9e", border:"none", borderRadius:"14px", padding:"12px", fontWeight:800, fontSize:"12px", cursor: claimedToday ? "not-allowed" : "pointer"}}>
+            {claimedToday ? "SUDAH KLAIM, BESOK LAGI YA!" : "KLAIM 4 LIMIT"}
+          </button>
+          <button onClick={()=>document.getElementById("paket")?.scrollIntoView({behavior:"smooth"})} style={{flex:1, background:"rgba(121,80,255,.9)", color:"#fff", border:"none", borderRadius:"14px", padding:"12px", fontWeight:800, fontSize:"12px"}}>BELI LIMIT</button>
+        </div>
+        {showHearts && <div style={{position:"absolute", inset:0, pointerEvents:"none"}}>{[...Array(8)].map((_,i)=><span key={i} style={{position:"absolute", left:`${15+i*10}%`, bottom:"20px", fontSize:"22px", animation:`floatHeart 1.5s ease-out ${i*0.12}s forwards`}}>💖</span>)}</div>}
+      </div>
+
+      <div onClick={()=>fileRef.current?.click()} style={{marginTop:"14px", background:"#fff", border:"2px solid #ffd3e9", borderRadius:"22px", padding:"22px 16px", textAlign:"center", boxShadow:"0 6px 20px rgba(255,122,181,.12)", cursor:"pointer"}}>
+        <div style={{width:"56px", height:"56px", background:"#fff0f6", border:"1px solid #ffd3e9", borderRadius:"50%", display:"grid", placeItems:"center", margin:"0 auto 10px", fontSize:"26px"}}>☁️</div>
+        <div style={{fontWeight:800, fontSize:"15px"}}>🎬 PILIH VIDEO SWHD</div>
+        <div style={{fontSize:"11px", color:"#a88", marginTop:"4px"}}>MP4, MOV iPhone, MKV, WebM didukung</div>
+        <input ref={fileRef} type="file" accept="video/*" hidden onChange={handleFile}/>
+        {file && <div style={{marginTop:"14px", background:"#fff7fb", border:"1px solid #ffd3e9", borderRadius:"14px", padding:"10px", display:"flex", gap:"10px"}}><video src={fileURL} style={{width:"52px", height:"52px", borderRadius:"10px", objectFit:"cover"}} muted/><div style={{flex:1, textAlign:"left"}}><div style={{fontSize:"12px", fontWeight:700}}>{file.name}</div><div style={{fontSize:"10px", color:"#a88"}}>{(file.size/1024/1024).toFixed(1)} MB</div></div><div style={{width:"28px", height:"28px", background:"#ff7ac0", color:"#fff", borderRadius:"50%", display:"grid", placeItems:"center"}}>✓</div></div>}
+      </div>
+
+      <div style={{marginTop:"14px"}}>
+        {!file ? <div style={{background:"#fff", border:"1px dashed #ffc8e1", borderRadius:"16px", padding:"14px", textAlign:"center", color:"#b77", fontSize:"12px"}}>Pilih video dulu ya sayang 💖</div>
+        : limit < 6 ? <div style={{background:"#ffe0ec", border:"1px solid #ffb3cf", borderRadius:"16px", padding:"16px", textAlign:"center"}}><div style={{fontWeight:800, color:"#d93d7a", fontSize:"13px"}}>Limit Kurang! 🥺</div><div style={{fontSize:"12px", color:"#8a4d64", marginTop:"4px"}}>Kamu punya <b>{limit}</b>, butuh 6. Klaim atau Beli dulu ya!</div></div>
+        : status==="idle" ? <button onClick={handleKirim} style={{width:"100%", background:"linear-gradient(135deg,#ff8ac7,#ff4d9e)", color:"#fff", border:"none", borderRadius:"18px", padding:"16px", fontWeight:800, fontSize:"14px", boxShadow:"0 10px 24px rgba(255,77,158,.35)", cursor:"pointer"}}>KIRIM SEKARANG (6 Limit) 🚀</button>
+        : status==="processing" ? <div style={{background:"#fff", border:"1px solid #ffd3e9", borderRadius:"18px", padding:"20px", textAlign:"center"}}><div style={{fontSize:"28px"}}>💖</div><div style={{fontWeight:800, marginTop:"8px", color:"#ff4d9e"}}>MEMPROSES...</div><div style={{fontSize:"11px", color:"#a88", marginTop:"4px"}}>Engine Elaraa lagi bikin HD ✨</div></div>
+        : <div style={{background:"#fff", border:"2px solid #ff7ac0", borderRadius:"20px", padding:"18px", textAlign:"center"}}><div style={{width:"52px", height:"52px", background:"#e8ffe8", borderRadius:"50%", display:"grid", placeItems:"center", margin:"0 auto", fontSize:"26px"}}>✔️</div><div style={{fontWeight:800, fontSize:"16px", marginTop:"10px", color:"#ff4d9e"}}>VIDEO SIAP! ✨</div><div style={{fontSize:"11px", color:"#777", marginTop:"4px"}}>Video kamu akan dikirim ke grup ini dalam 1-2 menit, lalu kamu forward ke Status WA biar HD tidak pecah!</div>{selectedGroup && <div style={{marginTop:"14px", background:"#fff7fb", border:"1px solid #ffd3e9", borderRadius:"16px", padding:"12px", textAlign:"left"}}><div style={{fontSize:"10px", fontWeight:800, color:"#ff4d9e"}}>GRUP TERPILIH</div><div style={{fontWeight:800, marginTop:"4px"}}>{selectedGroup.name}</div><button onClick={()=>window.open(selectedGroup.link,"_blank")} style={{width:"100%", marginTop:"10px", background:"#22c55e", color:"#fff", border:"2px solid #ffc8e1", borderRadius:"12px", padding:"12px", fontWeight:800, fontSize:"12px", cursor:"pointer"}}>💬 JOIN GRUP - BUKA WA</button></div>}<button onClick={()=>{setStatus("idle"); setFile(null); setSelectedGroup(null); setFileURL("");}} style={{marginTop:"12px", width:"100%", background:"#f5f5f5", border:"none", borderRadius:"12px", padding:"10px", fontWeight:700, fontSize:"11px", color:"#888"}}>Kirim Video Lain</button></div>}
+      </div>
+
+      <div id="paket" style={{marginTop:"18px"}}>
+        <div style={{display:"flex", gap:"6px", marginBottom:"10px"}}><div style={{fontWeight:800, fontSize:"14px"}}>Paket Beli Limit 💖</div><div style={{fontSize:"9px", background:"#ffe0ec", color:"#ff4d9e", padding:"4px 8px", borderRadius:"100px", fontWeight:800}}>Kadaluarsa 30 Hari</div></div>
+        <div style={{display:"flex", gap:"10px", overflowX:"auto"}}>
+          {paket.map((p,i)=><div key={i} style={{minWidth:"120px", flex:1, background:"#fff", border:"1px solid #ffd3e9", borderRadius:"18px", padding:"14px", textAlign:"center"}}><div style={{width:"36px", height:"36px", background:"#fff0f6", borderRadius:"50%", display:"grid", placeItems:"center", margin:"0 auto", fontSize:"18px"}}>💖</div><div style={{fontWeight:800, fontSize:"18px", marginTop:"8px"}}>{p.harga}</div><div style={{fontSize:"11px", fontWeight:700, color:"#ff4d9e"}}>{p.limit} Limit</div><div style={{fontSize:"10px", color:"#999"}}>({p.video} Video)</div><button onClick={()=>openWA(`Halo kak, mau beli paket ${p.harga} = ${p.limit} Limit ELARAA SWHD ya!`)} style={{width:"100%", marginTop:"10px", background:"linear-gradient(135deg,#ff8ac7,#ff4d9e)", color:"#fff", border:"none", borderRadius:"10px", padding:"8px", fontWeight:800, fontSize:"11px", cursor:"pointer"}}>BELI</button></div>)}
+        </div>
+      </div>
+    </div>
+  );
+}
