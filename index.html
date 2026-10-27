@@ -1,117 +1,149 @@
-"use client";
-import { useState, useEffect, useRef } from "react";
+import os, zipfile, shutil, textwrap
 
-export default function KirimPage() {
-  const [limit, setLimit] = useState(0);
-  const [claimedToday, setClaimedToday] = useState(false);
-  const [showHearts, setShowHearts] = useState(false);
-  const [file, setFile] = useState<File|null>(null);
-  const [fileURL, setFileURL] = useState("");
-  const [status, setStatus] = useState<"idle"|"processing"|"done">("idle");
-  const [selectedGroup, setSelectedGroup] = useState<{name:string, link:string}|null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
+base = "/mnt/data/elara_swhd_website"
+os.makedirs(base, exist_ok=True)
+# Copy supplied QR image into the website assets
+qr_src = "/mnt/data/42314.jpg"
+qr_dst = os.path.join(base, "qr-pembayaran.jpg")
+if os.path.exists(qr_src):
+    shutil.copy2(qr_src, qr_dst)
 
-  const groups = [
-    { name: "Grup 1 ELARAA", link: "https://chat.whatsapp.com/F0Cw2NpUHeeBNVWnhpYGGb" },
-    { name: "Grup 2 ELARAA", link: "https://chat.whatsapp.com/BoPwFUcBdGpEHRCxpC4WcG" },
-    { name: "Grup 3 ELARAA", link: "https://chat.whatsapp.com/JnZru9MDQsY842ReNV0QQ4" },
-  ];
-
-  const paket = [
-    { harga: "5K", limit: 200, video: 33 },
-    { harga: "10K", limit: 500, video: 83 },
-    { harga: "20K", limit: 1500, video: 250 },
-  ];
-
-  useEffect(()=>{
-    const saved = localStorage.getItem("elaraa_limit");
-    if(saved) setLimit(parseInt(saved));
-    const lastClaim = localStorage.getItem("elaraa_last_claim");
-    if(lastClaim){
-      if(lastClaim===new Date().toDateString()) setClaimedToday(true);
-    }
-  },[]);
-
-  useEffect(()=>{ localStorage.setItem("elaraa_limit", limit.toString()); },[limit]);
-
-  const handleClaim = () =>{
-    if(claimedToday) return;
-    setLimit(l=>l+4);
-    setClaimedToday(true);
-    localStorage.setItem("elaraa_last_claim", new Date().toDateString());
-    setShowHearts(true);
-    setTimeout(()=>setShowHearts(false), 1800);
-  };
-
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>)=>{
-    if(e.target.files?.[0]){
-      const f = e.target.files[0];
-      setFile(f);
-      setFileURL(URL.createObjectURL(f));
-      setStatus("idle");
-      setSelectedGroup(null);
-    }
-  };
-
-  const handleKirim = ()=>{
-    if(limit < 6 || !file) return;
-    setStatus("processing");
-    setSelectedGroup(groups[Math.floor(Math.random()*groups.length)]);
-    setLimit(l=>l-6);
-    setTimeout(()=>setStatus("done"),2000);
-  };
-
-  const openWA = (text:string)=>{
-    window.open(`https://wa.me/6282118148621?text=${encodeURIComponent(text)}`,"_blank");
-  };
-
-  return (
-    <div style={{minHeight:"100vh", background:"#fff7fb", padding:"16px", fontFamily:"Outfit, sans-serif"}}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&display=swap');
-      @keyframes floatHeart {0%{transform:translateY(20px) scale(0);opacity:0} 20%{opacity:1} 100%{transform:translateY(-120px) scale(1.4);opacity:0}}`}</style>
-
-      <div style={{position:"relative", background:"linear-gradient(135deg,#ffc1e3 0%,#ff8ac7 55%,#ff6fb5 100%)", borderRadius:"26px", padding:"18px 20px", color:"#fff", overflow:"hidden", boxShadow:"0 12px 30px rgba(255,122,181,.35)"}}>
-        <div style={{display:"flex", alignItems:"center", gap:"8px"}}>
-          <div style={{width:"36px", height:"36px", background:"rgba(255,255,255,.9)", borderRadius:"50%", display:"grid", placeItems:"center"}}>🎁</div>
-          <div style={{width:"32px", height:"32px", background:"rgba(255,255,255,.85)", borderRadius:"50%", display:"grid", placeItems:"center"}}>💖</div>
-          <span style={{fontWeight:700, fontSize:"13px"}}>LIMIT SAYA</span>
-        </div>
-        <div style={{display:"flex", alignItems:"baseline", gap:"8px", marginTop:"10px"}}>
-          <div style={{fontSize:"44px", fontWeight:800, lineHeight:1}}>{limit}</div>
-          <div style={{fontSize:"13px", fontWeight:700}}>LIMIT</div>
-        </div>
-        <div style={{fontSize:"12px", opacity:.9, marginTop:"4px"}}>1 Video = 6 Limit | Klaim harian 4 limit</div>
-        <div style={{display:"flex", gap:"10px", marginTop:"16px"}}>
-          <button onClick={handleClaim} disabled={claimedToday} style={{flex:1, background: claimedToday ? "rgba(255,255,255,.6)" : "#fff", color: claimedToday ? "#a88" : "#ff4d9e", border:"none", borderRadius:"14px", padding:"12px", fontWeight:800, fontSize:"12px", cursor: claimedToday ? "not-allowed" : "pointer"}}>
-            {claimedToday ? "SUDAH KLAIM, BESOK LAGI YA!" : "KLAIM 4 LIMIT"}
-          </button>
-          <button onClick={()=>document.getElementById("paket")?.scrollIntoView({behavior:"smooth"})} style={{flex:1, background:"rgba(121,80,255,.9)", color:"#fff", border:"none", borderRadius:"14px", padding:"12px", fontWeight:800, fontSize:"12px"}}>BELI LIMIT</button>
-        </div>
-        {showHearts && <div style={{position:"absolute", inset:0, pointerEvents:"none"}}>{[...Array(8)].map((_,i)=><span key={i} style={{position:"absolute", left:`${15+i*10}%`, bottom:"20px", fontSize:"22px", animation:`floatHeart 1.5s ease-out ${i*0.12}s forwards`}}>💖</span>)}</div>}
-      </div>
-
-      <div onClick={()=>fileRef.current?.click()} style={{marginTop:"14px", background:"#fff", border:"2px solid #ffd3e9", borderRadius:"22px", padding:"22px 16px", textAlign:"center", boxShadow:"0 6px 20px rgba(255,122,181,.12)", cursor:"pointer"}}>
-        <div style={{width:"56px", height:"56px", background:"#fff0f6", border:"1px solid #ffd3e9", borderRadius:"50%", display:"grid", placeItems:"center", margin:"0 auto 10px", fontSize:"26px"}}>☁️</div>
-        <div style={{fontWeight:800, fontSize:"15px"}}>🎬 PILIH VIDEO SWHD</div>
-        <div style={{fontSize:"11px", color:"#a88", marginTop:"4px"}}>MP4, MOV iPhone, MKV, WebM didukung</div>
-        <input ref={fileRef} type="file" accept="video/*" hidden onChange={handleFile}/>
-        {file && <div style={{marginTop:"14px", background:"#fff7fb", border:"1px solid #ffd3e9", borderRadius:"14px", padding:"10px", display:"flex", gap:"10px"}}><video src={fileURL} style={{width:"52px", height:"52px", borderRadius:"10px", objectFit:"cover"}} muted/><div style={{flex:1, textAlign:"left"}}><div style={{fontSize:"12px", fontWeight:700}}>{file.name}</div><div style={{fontSize:"10px", color:"#a88"}}>{(file.size/1024/1024).toFixed(1)} MB</div></div><div style={{width:"28px", height:"28px", background:"#ff7ac0", color:"#fff", borderRadius:"50%", display:"grid", placeItems:"center"}}>✓</div></div>}
-      </div>
-
-      <div style={{marginTop:"14px"}}>
-        {!file ? <div style={{background:"#fff", border:"1px dashed #ffc8e1", borderRadius:"16px", padding:"14px", textAlign:"center", color:"#b77", fontSize:"12px"}}>Pilih video dulu ya sayang 💖</div>
-        : limit < 6 ? <div style={{background:"#ffe0ec", border:"1px solid #ffb3cf", borderRadius:"16px", padding:"16px", textAlign:"center"}}><div style={{fontWeight:800, color:"#d93d7a", fontSize:"13px"}}>Limit Kurang! 🥺</div><div style={{fontSize:"12px", color:"#8a4d64", marginTop:"4px"}}>Kamu punya <b>{limit}</b>, butuh 6. Klaim atau Beli dulu ya!</div></div>
-        : status==="idle" ? <button onClick={handleKirim} style={{width:"100%", background:"linear-gradient(135deg,#ff8ac7,#ff4d9e)", color:"#fff", border:"none", borderRadius:"18px", padding:"16px", fontWeight:800, fontSize:"14px", boxShadow:"0 10px 24px rgba(255,77,158,.35)", cursor:"pointer"}}>KIRIM SEKARANG (6 Limit) 🚀</button>
-        : status==="processing" ? <div style={{background:"#fff", border:"1px solid #ffd3e9", borderRadius:"18px", padding:"20px", textAlign:"center"}}><div style={{fontSize:"28px"}}>💖</div><div style={{fontWeight:800, marginTop:"8px", color:"#ff4d9e"}}>MEMPROSES...</div><div style={{fontSize:"11px", color:"#a88", marginTop:"4px"}}>Engine Elaraa lagi bikin HD ✨</div></div>
-        : <div style={{background:"#fff", border:"2px solid #ff7ac0", borderRadius:"20px", padding:"18px", textAlign:"center"}}><div style={{width:"52px", height:"52px", background:"#e8ffe8", borderRadius:"50%", display:"grid", placeItems:"center", margin:"0 auto", fontSize:"26px"}}>✔️</div><div style={{fontWeight:800, fontSize:"16px", marginTop:"10px", color:"#ff4d9e"}}>VIDEO SIAP! ✨</div><div style={{fontSize:"11px", color:"#777", marginTop:"4px"}}>Video kamu akan dikirim ke grup ini dalam 1-2 menit, lalu kamu forward ke Status WA biar HD tidak pecah!</div>{selectedGroup && <div style={{marginTop:"14px", background:"#fff7fb", border:"1px solid #ffd3e9", borderRadius:"16px", padding:"12px", textAlign:"left"}}><div style={{fontSize:"10px", fontWeight:800, color:"#ff4d9e"}}>GRUP TERPILIH</div><div style={{fontWeight:800, marginTop:"4px"}}>{selectedGroup.name}</div><button onClick={()=>window.open(selectedGroup.link,"_blank")} style={{width:"100%", marginTop:"10px", background:"#22c55e", color:"#fff", border:"2px solid #ffc8e1", borderRadius:"12px", padding:"12px", fontWeight:800, fontSize:"12px", cursor:"pointer"}}>💬 JOIN GRUP - BUKA WA</button></div>}<button onClick={()=>{setStatus("idle"); setFile(null); setSelectedGroup(null); setFileURL("");}} style={{marginTop:"12px", width:"100%", background:"#f5f5f5", border:"none", borderRadius:"12px", padding:"10px", fontWeight:700, fontSize:"11px", color:"#888"}}>Kirim Video Lain</button></div>}
-      </div>
-
-      <div id="paket" style={{marginTop:"18px"}}>
-        <div style={{display:"flex", gap:"6px", marginBottom:"10px"}}><div style={{fontWeight:800, fontSize:"14px"}}>Paket Beli Limit 💖</div><div style={{fontSize:"9px", background:"#ffe0ec", color:"#ff4d9e", padding:"4px 8px", borderRadius:"100px", fontWeight:800}}>Kadaluarsa 30 Hari</div></div>
-        <div style={{display:"flex", gap:"10px", overflowX:"auto"}}>
-          {paket.map((p,i)=><div key={i} style={{minWidth:"120px", flex:1, background:"#fff", border:"1px solid #ffd3e9", borderRadius:"18px", padding:"14px", textAlign:"center"}}><div style={{width:"36px", height:"36px", background:"#fff0f6", borderRadius:"50%", display:"grid", placeItems:"center", margin:"0 auto", fontSize:"18px"}}>💖</div><div style={{fontWeight:800, fontSize:"18px", marginTop:"8px"}}>{p.harga}</div><div style={{fontSize:"11px", fontWeight:700, color:"#ff4d9e"}}>{p.limit} Limit</div><div style={{fontSize:"10px", color:"#999"}}>({p.video} Video)</div><button onClick={()=>openWA(`Halo kak, mau beli paket ${p.harga} = ${p.limit} Limit ELARAA SWHD ya!`)} style={{width:"100%", marginTop:"10px", background:"linear-gradient(135deg,#ff8ac7,#ff4d9e)", color:"#fff", border:"none", borderRadius:"10px", padding:"8px", fontWeight:800, fontSize:"11px", cursor:"pointer"}}>BELI</button></div>)}
-        </div>
-      </div>
-    </div>
-  );
-}
+html = r'''<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff8db8">
+<title>Elara SWHD ♡</title>
+<style>
+:root{--pink:#ff8db8;--pink2:#ffd5e5;--pink3:#fff0f6;--rose:#d94f87;--ink:#512d40;--white:#fffdfd}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#fff8fb,#ffeaf3 48%,#fff9fc);color:var(--ink);font-family:"Trebuchet MS",system-ui,sans-serif}
+button,a{font:inherit}
+a{color:inherit;text-decoration:none}
+.decor{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.float{position:absolute;animation:floaty 5s ease-in-out infinite;font-size:clamp(18px,3vw,30px);opacity:.6}
+.float:nth-child(1){left:5%;top:18%;animation-delay:-1s}.float:nth-child(2){right:7%;top:29%;animation-delay:-3s}.float:nth-child(3){left:10%;bottom:15%;animation-delay:-2s}.float:nth-child(4){right:12%;bottom:10%;animation-delay:-4s}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-18px) rotate(9deg)}}
+header,main,footer{position:relative;z-index:1}
+header{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font-weight:1000;color:var(--rose);font-size:1.2rem;letter-spacing:.4px}
+.pill{border:1px solid #ffc0d8;background:#fff9fc;padding:9px 14px;border-radius:999px;font-size:.9rem}
+.hero{min-height:74vh;display:grid;place-items:center;text-align:center;padding:45px 20px 70px}
+.hero-card{max-width:760px;width:100%;padding:clamp(24px,5vw,48px);border:2px solid #fff;background:#ffffffc9;border-radius:32px;box-shadow:0 20px 60px #e96da51c;backdrop-filter:blur(10px)}
+.badge{display:inline-block;background:#ffe0ec;color:#b94076;border-radius:999px;padding:8px 14px;font-size:.86rem;font-weight:800}
+h1{font-size:clamp(2.4rem,8vw,5rem);line-height:1.02;margin:18px 0 12px;color:#d94f87;letter-spacing:-2px}
+h1 span{color:#ff9ec3}
+.subtitle{max-width:560px;margin:0 auto;color:#80566b;line-height:1.7}
+.mascot{width:140px;height:140px;border-radius:44% 44% 48% 48%;margin:22px auto 18px;position:relative;background:linear-gradient(135deg,#ffc3da,#ff8fb8);box-shadow:inset 0 -8px #e96c9b,0 12px 24px #e96c9b30;animation:bob 2.6s ease-in-out infinite}
+.hair{position:absolute;left:9px;right:9px;top:4px;height:48px;border-radius:50% 50% 25% 25%;background:#ff85b2}
+.hair:before,.hair:after{content:"";position:absolute;top:17px;width:30px;height:43px;background:#ff85b2;border-radius:50%}
+.hair:before{left:-4px;transform:rotate(20deg)}.hair:after{right:-4px;transform:rotate(-20deg)}
+.bow{position:absolute;right:2px;top:12px;width:20px;height:14px;background:#d94f87;border-radius:8px 2px 8px 2px;transform:rotate(20deg)}
+.face{position:absolute;left:25px;right:25px;top:40px;height:69px;border-radius:46% 46% 48% 48%;background:#ffe4d8}
+.eye{position:absolute;top:28px;width:13px;height:20px;background:#5c8791;border-radius:50%;border:2px solid white;box-shadow:0 0 0 1px #4d6570}
+.eye.left{left:20px}.eye.right{right:20px}
+.eye:after{content:"";position:absolute;width:4px;height:6px;background:white;border-radius:50%;top:3px;left:3px}
+.blush{position:absolute;top:49px;width:15px;height:7px;background:#ff9cb3;border-radius:50%;opacity:.75}.blush.left{left:8px}.blush.right{right:8px}
+.mouth{position:absolute;left:50%;top:51px;width:9px;height:5px;border-bottom:2px solid #a85b6e;border-radius:50%;transform:translateX(-50%)}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}
+.actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:25px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:13px 20px;font-weight:900;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 10px 22px #d94f8730}
+.primary{background:linear-gradient(135deg,#ff83b1,#e65391);color:white}.secondary{background:white;border:1px solid #ffc2d9;color:#b94076}
+section{max-width:1000px;margin:0 auto;padding:25px 20px 45px}
+.section-title{text-align:center;margin:0 0 8px;font-size:clamp(1.7rem,5vw,2.5rem);color:#d94f87}
+.section-sub{text-align:center;margin:0 auto 24px;color:#916a7d;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{background:#fffdfd;border:1px solid #ffd5e5;border-radius:22px;padding:20px;box-shadow:0 10px 30px #d94f870d}
+.card h3{margin:8px 0;color:#bd477b}.card p{color:#88677a;line-height:1.6;font-size:.94rem}
+.icon{font-size:1.8rem}
+.card .btn{width:100%;padding:11px 14px}
+.payment-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;align-items:center}
+.qr-frame{padding:12px;background:white;border:2px dashed #ff9fc2;border-radius:25px;max-width:380px;margin:auto}
+.qr-frame img{display:block;width:100%;height:auto;border-radius:14px}
+.note{font-size:.85rem;color:#8b687a;line-height:1.6}
+footer{text-align:center;padding:28px 18px 40px;color:#9b7185;font-size:.9rem}
+.reveal{opacity:0;transform:translateY(20px);animation:reveal .8s .15s ease forwards}
+@keyframes reveal{to{opacity:1;transform:translateY(0)}}
+#intro{position:fixed;inset:0;z-index:10;background:linear-gradient(135deg,#ffe5ef,#ff9fc5);display:grid;place-items:center;text-align:center;padding:24px;animation:introOut .8s ease 2.5s forwards}
+.intro-inner{animation:introPop .9s cubic-bezier(.2,1.4,.4,1) both}
+.intro-heart{font-size:3.5rem;animation:heart 1s ease-in-out infinite}
+#intro h2{font-size:clamp(2rem,7vw,3.4rem);margin:8px 0;color:#c84079}
+#intro p{color:#86415f}
+@keyframes introPop{from{opacity:0;transform:scale(.65) rotate(-8deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes heart{50%{transform:scale(1.2)}}
+@keyframes introOut{to{opacity:0;visibility:hidden;pointer-events:none}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div id="intro" aria-label="Animasi pembuka Elara SWHD">
+  <div class="intro-inner"><div class="intro-heart">🎀 💗 🎀</div><h2>Welcome to Elara SWHD!</h2><p>little pink world ⋆｡°✩</p><div class="mascot" aria-hidden="true"><div class="hair"></div><div class="bow"></div><div class="face"><i class="eye left"></i><i class="eye right"></i><i class="blush left"></i><i class="blush right"></i><i class="mouth"></i></div></div><p>♡ loading cuteness... ♡</p></div>
+</div>
+<div class="decor" aria-hidden="true"><span class="float">♡</span><span class="float">✦</span><span class="float">🎀</span><span class="float">✧</span></div>
+<header><a class="brand" href="#">🎀 ELARA SWHD</a><a class="pill" href="#menu">♡ Explore menu</a></header>
+<main>
+<section class="hero">
+ <div class="hero-card reveal">
+  <span class="badge">୨୧ welcome to my little world ୨୧</span>
+  <div class="mascot" aria-label="Maskot chibi berambut pink"><div class="hair"></div><div class="bow"></div><div class="face"><i class="eye left"></i><i class="eye right"></i><i class="blush left"></i><i class="blush right"></i><i class="mouth"></i></div></div>
+  <h1>Elara <span>SWHD</span> ♡</h1>
+  <p class="subtitle">Tempat kecil yang penuh warna pink, tombol lucu, dan vibes manis. Pilih menu di bawah untuk lanjut, yaa! 🌸</p>
+  <div class="actions"><a class="btn primary" href="#menu">💗 Mulai sekarang</a><a class="btn secondary" href="#grup">👥 Gabung grup</a></div>
+ </div>
+</section>
+<section id="menu">
+ <h2 class="section-title">Menu Manis ˚ʚ♡ɞ˚</h2><p class="section-sub">Pilih yang kamu butuhkan, semuanya dibikin cute buat kamu.</p>
+ <div class="grid">
+  <article class="card"><div class="icon">💌</div><h3>Chat Admin</h3><p>Hubungi nomor WhatsApp admin untuk bertanya atau bantuan.</p><a class="btn primary" href="https://wa.me/628211814862">Chat WhatsApp</a></article>
+  <article class="card"><div class="icon">🤖</div><h3>Bot Pemroses</h3><p>Buka percakapan dengan nomor bot yang disediakan.</p><a class="btn secondary" href="https://wa.me/6283173855429">Buka Bot</a></article>
+  <article class="card"><div class="icon">💸</div><h3>Pembayaran</h3><p>Lihat QR pembayaran. Pastikan nama penerima dan nominal benar sebelum membayar.</p><a class="btn primary" href="#pembayaran">Lihat QR</a></article>
+ </div>
+</section>
+<section id="grup">
+ <h2 class="section-title">Our Cute Groups 🎀</h2><p class="section-sub">Pilih grup yang ingin kamu kunjungi.</p>
+ <div class="grid">
+  <article class="card"><div class="icon">🌷</div><h3>Grup 1</h3><p>Masuk ke grup WhatsApp pertama.</p><a class="btn secondary" target="_blank" rel="noopener" href="https://chat.whatsapp.com/F0Cw2NpUHeeBNVWnhpYGGb">Gabung grup ♡</a></article>
+  <article class="card"><div class="icon">🍓</div><h3>Grup 2</h3><p>Masuk ke grup WhatsApp kedua.</p><a class="btn secondary" target="_blank" rel="noopener" href="https://chat.whatsapp.com/BoPwFUcBdGpEHRCxpC4WcG">Gabung grup ♡</a></article>
+  <article class="card"><div class="icon">🧁</div><h3>Grup 3</h3><p>Masuk ke grup WhatsApp ketiga.</p><a class="btn secondary" target="_blank" rel="noopener" href="https://chat.whatsapp.com/JnZru9MDQsY842ReNV0QQ4">Gabung grup ♡</a></article>
+  <article class="card"><div class="icon">🩰</div><h3>Grup 4</h3><p>Masuk ke grup WhatsApp keempat.</p><a class="btn secondary" target="_blank" rel="noopener" href="https://chat.whatsapp.com/G37lusc8m7dBWNTyWJctsj">Gabung grup ♡</a></article>
+  <article class="card"><div class="icon">🍬</div><h3>Grup 5</h3><p>Masuk ke grup WhatsApp kelima.</p><a class="btn secondary" target="_blank" rel="noopener" href="https://chat.whatsapp.com/KdGDHoHDlxk84IeeanYev3">Gabung grup ♡</a></article>
+ </div>
+</section>
+<section id="pembayaran">
+ <h2 class="section-title">Payment Corner 💗</h2><p class="section-sub">QR pembayaran yang kamu kirim.</p>
+ <div class="payment-wrap">
+  <div class="qr-frame"><img src="qr-pembayaran.jpg" alt="QR pembayaran yang diberikan pemilik website"></div>
+  <div class="card"><div class="icon">🎀</div><h3>Scan & Pay</h3><p>Scan QR menggunakan aplikasi pembayaran yang mendukungnya. Sebelum konfirmasi, periksa nama penerima, nominal, dan detail transaksi.</p><p class="note">Catatan: QR pada gambar bertema pink dan memiliki hiasan. Pastikan QR benar-benar dapat dipindai dan cocok dengan akun penerima sebelum website dipublikasikan. Website ini belum memverifikasi pembayaran secara otomatis.</p><a class="btn primary" href="https://wa.me/628211814862?text=Halo%20admin%20Elara%20SWHD%2C%20saya%20ingin%20konfirmasi%20pembayaran.">Konfirmasi ke Admin</a></div>
+ </div>
+</section>
+</main>
+<footer>Made with ♡ in pink for Elara SWHD · stay cute, stay kind 🎀</footer>
+<script>
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const target=document.querySelector(a.getAttribute('href'));if(target){e.preventDefault();target.scrollIntoView({behavior:'smooth'});}}));
+setTimeout(()=>{const intro=document.getElementById('intro');if(intro)intro.setAttribute('aria-hidden','true')},3300);
+</script>
+</body>
+</html>'''
+with open(os.path.join(base, "index.html"), "w", encoding="utf-8") as f:
+    f.write(html)
+readme = """ELARA SWHD — website pink cute
+Cara pakai:
+1. Ekstrak file ZIP.
+2. Buka index.html di browser untuk preview.
+3. Untuk dipublikasikan, unggah index.html dan qr-pembayaran.jpg bersama-sama ke hosting statis.
+Catatan:
+- Website ini masih versi front-end; belum ada backend, akun login, database, atau verifikasi pembayaran otomatis.
+- Pastikan QR dapat dipindai dan data penerima benar sebelum dipakai pelanggan.
+- Nomor dan link grup di halaman berasal dari data yang diberikan pemilik.
+"""
+with open(os.path.join(base, "README.txt"), "w", encoding="utf-8") as f:
+    f.write(readme)
+zip_path = "/mnt/data/Elara_SWHD_Website.zip"
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+    for name in os.listdir(base):
+        z.write(os.path.join(base, name), arcname=name)
+print("Website dibuat:", zip_path)
+print("Isi:", ", ".join(os.listdir(base)))
